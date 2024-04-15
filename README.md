@@ -24,13 +24,13 @@ The .env.example file can now be deleted.
 
 ### 3. Setup the databases
 
-Run the command "npm setup-dbs".
+Run the command "npm run setup-dbs".
 
 This will create the databases needed to run this project.
 
 ### 4. Seed the databases
 
-Run the command "npm run-seed".
+Run the command "npm run seed".
 
 This will run the file, run-seed.js, which will populate the databases with the necessary tables and seed data.
 
