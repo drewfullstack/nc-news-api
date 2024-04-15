@@ -9,7 +9,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET /api/not-valid-endpoint", () => {
-  test("status: 404 - responds with with an error for any non existent endpoints", () => {
+  test("status: 404 - responds with an error for any non existent endpoints", () => {
     return request(app)
       .get("/api/not-valid-endpoint")
       .expect(404)
@@ -21,7 +21,7 @@ describe("GET /api/not-valid-endpoint", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("status: 200 - responds with with an array of topics, each with a slug and description", () => {
+  test("status: 200 - responds with an array of topics, each with a slug and description", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -36,13 +36,40 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api", () => {
-  test("status: 200 - responds with with an array of topics, each with all endpoints available", () => {
+  test("status: 200 - responds with an array of topics, each with all endpoints available", () => {
     return request(app)
       .get("/api")
       .expect(200)
       .then(({ body }) => {
         expect(typeof body).toBe("object");
         expect(body).toEqual(endpoints);
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("status: 200 - responds with an article of the given id", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.article_id).toBe(1);
+      });
+  });
+  test("status: 404 - responds with 404 not found for an article id that does not exist", () => {
+    return request(app)
+      .get("/api/articles/9999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+  test("status: 400 - responds with 400 invalid request for an invalid id", () => {
+    return request(app)
+      .get("/api/articles/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("invalid request");
       });
   });
 });
