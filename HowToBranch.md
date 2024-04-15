@@ -10,6 +10,7 @@
 9. give it a title and description
 10. click create pull request
 11. share link via /nchelp pr (e.g. github-username/nc-news-api/pull/1)
+    -> Click Merge pull request + confirm merge on Github
 12. go back to terminal on project
 13. need to go onto main branch and pull down all the changes we have pushed to Github:
 14. git checkout main
