@@ -119,8 +119,15 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
-
-  test("status: 404 - responds with 404 not found for an article id that does not exist / article with no comments", () => {
+  test("status: 200 - responds with 200 for an article with no comments", () => {
+    return request(app)
+      .get("/api/articles/7/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(0);
+      });
+  });
+  test("status: 404 - responds with 404 not found for an article id that does not exist", () => {
     return request(app)
       .get("/api/articles/99999/comments")
       .expect(404)
