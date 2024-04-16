@@ -157,6 +157,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then(({ body: { comment } }) => {
+        expect(comment.comment_id).toBe(19);
         expect(comment.body).toBe("This is a great article");
         expect(comment.article_id).toBe(7);
         expect(comment.author).toBe("butter_bridge");
@@ -216,6 +217,20 @@ describe("POST /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with error for invalid data type in id parameter", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "This is a great article",
+    };
+    return request(app)
+      .post("/api/articles/abc/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid request");
       });
   });
 });
