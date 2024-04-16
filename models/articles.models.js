@@ -10,14 +10,20 @@ exports.fetchArticle = (article_id) => {
     });
 };
 
-exports.fetchArticles = () => {
-  return db
-    .query(
-      "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id)::INT AS comment_count FROM articles ORDER BY articles.created_at DESC;"
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.fetchArticles = (topic) => {
+  let sqlStringQuery =
+    "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id)::INT AS comment_count FROM articles ";
+  let queryValues = [];
+
+  if (topic) {
+    sqlStringQuery += "WHERE articles.topic = $1 ";
+    queryValues.push(topic);
+  }
+  sqlStringQuery += "ORDER BY articles.created_at DESC";
+
+  return db.query(sqlStringQuery, queryValues).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.fetchComments = (article_id) => {
