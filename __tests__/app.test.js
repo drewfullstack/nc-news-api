@@ -144,3 +144,78 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+// POST
+describe("POST /api/articles/:article_id/comments", () => {
+  test("status: 201 - responds with created comment", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "This is a great article",
+    };
+    return request(app)
+      .post("/api/articles/7/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment.body).toBe("This is a great article");
+        expect(comment.article_id).toBe(7);
+        expect(comment.author).toBe("butter_bridge");
+        expect(comment.votes).toBe(0);
+        expect(typeof comment.created_at).toBe("string");
+      });
+  });
+  test("status: 404 - responds with 404 if article does not exist", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "This is a great article!",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+  test("status: 404 - responds with 404 if username does not exist", () => {
+    const newComment = {
+      username: "not-a-username",
+      body: "This is a great article!",
+    };
+    return request(app)
+      .post("/api/articles/7/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("not found");
+      });
+  });
+  test("status: 400 - responds with error for incorrect body shape", () => {
+    const newComment = {
+      body: "new comment with no username",
+    };
+    return request(app)
+      .post("/api/articles/7/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with error for invalid data type in body", () => {
+    const newComment = {
+      username: 123,
+      body: 123,
+    };
+    return request(app)
+      .post("/api/articles/7/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+});
