@@ -11,7 +11,6 @@ exports.checkTopicExists = (topic) => {
     .query("SELECT * FROM topics WHERE slug=$1", [topic])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        console.log();
         return Promise.reject({ status: 404, message: "not found" });
       }
     });
