@@ -93,5 +93,8 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment from a given comment id"
   }
 }

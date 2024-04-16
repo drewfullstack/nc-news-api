@@ -313,3 +313,29 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+// DELETE
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status: 204 - responds with 204 and no content", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+
+  test("status: 404 - responds with 404 if comment does not exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+
+  test("status: 400 - responds with error for invalid data type in id parameter", () => {
+    return request(app)
+      .delete("/api/comments/not-an-id")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid request");
+      });
+  });
+});

@@ -9,6 +9,7 @@ const {
 const {
   postComment,
   getComments,
+  deleteComment,
 } = require("./controllers/comments.controller");
 const endpoints = require("./endpoints.json");
 const app = express();
@@ -28,6 +29,8 @@ app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 // PSQL ERROR HANDLERS
 app.use((err, req, res, next) => {
