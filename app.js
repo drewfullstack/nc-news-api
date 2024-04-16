@@ -3,9 +3,13 @@ const { getTopics } = require("./controllers/topics.controllers");
 const {
   getArticle,
   getArticles,
-  getComments,
+  patchArticle,
 } = require("./controllers/articles.controllers");
-const { postComment } = require("./controllers/comments.controller");
+
+const {
+  postComment,
+  getComments,
+} = require("./controllers/comments.controller");
 const endpoints = require("./endpoints.json");
 const app = express();
 app.use(express.json());
@@ -22,6 +26,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.patch("/api/articles/:article_id", patchArticle);
 
 // PSQL ERROR HANDLERS
 app.use((err, req, res, next) => {
