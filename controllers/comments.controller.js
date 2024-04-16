@@ -53,10 +53,15 @@ exports.getComments = (req, res, next) => {
 };
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
-
-  Promise.all([removeComment(comment_id), checkCommentExists(comment_id)])
+  checkCommentExists(comment_id)
     .then(() => {
-      res.status(204).send();
+      removeComment(comment_id)
+        .then(() => {
+          res.status(204).send();
+        })
+        .catch((err) => {
+          next(err);
+        });
     })
     .catch((err) => {
       next(err);
