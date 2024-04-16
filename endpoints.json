@@ -76,5 +76,22 @@
         }
       ]
     }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "patches an article with a votes incrementor",
+    "queries": [],
+    "body": { "inc_votes": 10 },
+    "exampleResponse": {
+      "article": [
+        {
+          "comment_id": 19,
+          "body": "This is a great article",
+          "article_id": 7,
+          "author": "butter_bridge",
+          "votes": 10,
+          "created_at": "2024-04-16T11:13:56.906Z"
+        }
+      ]
+    }
   }
 }
