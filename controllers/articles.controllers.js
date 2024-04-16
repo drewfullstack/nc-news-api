@@ -1,8 +1,7 @@
+const { fetchArticle, fetchArticles } = require("../models/articles.models");
 const {
-  fetchArticle,
-  fetchArticles,
-  fetchComments,
   checkArticleExists,
+  updateArticle,
 } = require("../models/articles.models");
 
 exports.getArticle = (req, res, next) => {
@@ -23,12 +22,31 @@ exports.getArticles = (req, res, next) => {
   });
 };
 
-exports.getComments = (req, res, next) => {
+exports.patchArticle = (req, res, next) => {
   const { article_id } = req.params;
+  const { inc_votes } = req.body;
 
-  Promise.all([fetchComments(article_id), checkArticleExists(article_id)])
-    .then(([comments]) => {
-      res.status(200).send({ comments });
+  const inputBodyFieldsArray = Object.keys(req.body);
+  const fieldSchema = {
+    inc_votes: "number",
+  };
+
+  if (inputBodyFieldsArray.length !== 1) {
+    return res.status(400).send({ status: 400, message: "invalid body" });
+  }
+
+  inputBodyFieldsArray.forEach((field) => {
+    if (typeof req.body[field] !== fieldSchema[field]) {
+      return res.status(400).send({ status: 400, message: "invalid body" });
+    }
+  });
+
+  Promise.all([
+    updateArticle(article_id, inc_votes),
+    checkArticleExists(article_id),
+  ])
+    .then(([article]) => {
+      res.status(200).send({ article });
     })
     .catch((err) => {
       next(err);

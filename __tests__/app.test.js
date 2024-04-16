@@ -234,3 +234,82 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+// PATCH
+describe("PATCH /api/articles/:article_id", () => {
+  test("status: 200 - responds with patched article with positive votes", () => {
+    const newArticleVotes = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newArticleVotes)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(3);
+        expect(article.votes).toBe(10);
+      });
+  });
+  test("status: 200 - responds with patched article with negative votes", () => {
+    const newArticleVotes = {
+      inc_votes: -10,
+    };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newArticleVotes)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(3);
+        expect(article.votes).toBe(-10);
+      });
+  });
+  test("status: 404 - responds with 404 if article does not exist", () => {
+    const newArticleVotes = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/articles/999")
+      .send(newArticleVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+  test("status: 400 - responds with error for incorrect body shape", () => {
+    const newArticleVotes = {};
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newArticleVotes)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with error for invalid data type in body", () => {
+    const newArticleVotes = {
+      inc_votes: "10",
+    };
+    return request(app)
+      .patch("/api/articles/7")
+      .send(newArticleVotes)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with error for invalid data type in id parameter", () => {
+    const newArticleVotes = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/articles/not-an-id")
+      .send(newArticleVotes)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid request");
+      });
+  });
+});

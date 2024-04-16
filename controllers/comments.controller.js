@@ -1,5 +1,8 @@
 const { checkUserExists } = require("../models/users.models");
-const { checkArticleExists } = require("../models/articles.models");
+const {
+  checkArticleExists,
+  fetchComments,
+} = require("../models/articles.models");
 const { sendComment } = require("../models/comments.models");
 
 exports.postComment = (req, res, next) => {
@@ -28,6 +31,17 @@ exports.postComment = (req, res, next) => {
   ])
     .then(([comment]) => {
       res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+exports.getComments = (req, res, next) => {
+  const { article_id } = req.params;
+
+  Promise.all([fetchComments(article_id), checkArticleExists(article_id)])
+    .then(([comments]) => {
+      res.status(200).send({ comments });
     })
     .catch((err) => {
       next(err);
