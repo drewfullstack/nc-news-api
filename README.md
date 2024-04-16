@@ -28,17 +28,17 @@ Run the command "npm run setup-dbs".
 
 This will create the databases needed to run this project.
 
-### 4. Seed the databases
-
-Run the command "npm run seed".
-
-This will run the file, run-seed.js, which will populate the databases with the necessary tables and seed data.
-
-### 5. Install dependencies
+### 4. Install dependencies
 
 Run the command "npm install".
 
 This will run all necessary dependencies that can be found in the package.json file.
+
+### 5. Seed the databases
+
+Run the command "npm run seed".
+
+This will run the file, run-seed.js, which will populate the databases with the necessary tables and seed data.
 
 ### 6. Running the test file
 
