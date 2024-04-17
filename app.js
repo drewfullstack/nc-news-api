@@ -1,39 +1,11 @@
 const express = require("express");
-const { getTopics } = require("./controllers/topics.controllers");
-const {
-  getArticle,
-  getArticles,
-  patchArticle,
-} = require("./controllers/articles.controllers");
 
-const {
-  postComment,
-  getComments,
-  deleteComment,
-} = require("./controllers/comments.controller");
-const { getUsers } = require("./controllers/users.controllers");
-const endpoints = require("./endpoints.json");
+const apiRouter = require("./routes/api-router");
+
 const app = express();
 app.use(express.json());
-app.get("/api/topics", getTopics);
 
-app.get("/api", (req, res) => {
-  res.status(200).send(endpoints);
-});
-
-app.get("/api/articles/:article_id", getArticle);
-
-app.get("/api/articles", getArticles);
-
-app.get("/api/articles/:article_id/comments", getComments);
-
-app.get("/api/users", getUsers);
-
-app.post("/api/articles/:article_id/comments", postComment);
-
-app.patch("/api/articles/:article_id", patchArticle);
-
-app.delete("/api/comments/:comment_id", deleteComment);
+app.use("/api", apiRouter);
 
 // PSQL ERROR HANDLERS
 app.use((err, req, res, next) => {
