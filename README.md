@@ -1,5 +1,10 @@
 # nc-news-api
 
+Hosted version: https://nc-news-api-ybcs.onrender.com/api
+Miniumum versions: Node: v21.6.1, Postgres: 14.11
+
+# Description
+
 This is the backend component of a Reddit like news server, that provides a RESTful API for interacting with the components of this service.
 
 ## Getting Started
@@ -29,6 +34,9 @@ Run the command "npm run setup-dbs".
 This will create the databases needed to run this project.
 
 ### 4. Install dependencies
+
+Add this script to the package.json:
+"prepare": "husky install"
 
 Run the command "npm install".
 
