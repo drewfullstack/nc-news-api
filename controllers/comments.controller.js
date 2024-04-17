@@ -7,6 +7,7 @@ const {
   sendComment,
   removeComment,
   checkCommentExists,
+  updateComment,
 } = require("../models/comments.models");
 
 exports.postComment = (req, res, next) => {
@@ -62,6 +63,37 @@ exports.deleteComment = (req, res, next) => {
         .catch((err) => {
           next(err);
         });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+
+  const inputBodyFieldsArray = Object.keys(req.body);
+  const fieldSchema = {
+    inc_votes: "number",
+  };
+
+  if (inputBodyFieldsArray.length !== 1) {
+    return res.status(400).send({ status: 400, message: "invalid body" });
+  }
+
+  inputBodyFieldsArray.forEach((field) => {
+    if (typeof req.body[field] !== fieldSchema[field]) {
+      return res.status(400).send({ status: 400, message: "invalid body" });
+    }
+  });
+
+  Promise.all([
+    updateComment(comment_id, inc_votes),
+    checkCommentExists(comment_id),
+  ])
+    .then(([comment]) => {
+      res.status(200).send({ comment });
     })
     .catch((err) => {
       next(err);
