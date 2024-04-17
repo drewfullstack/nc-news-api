@@ -97,5 +97,18 @@
   },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment from a given comment id"
+  },
+  "GET /api/users/:username": {
+    "description": "serves a user object with a given username",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "footiefan123",
+          "avatar_url": "https...",
+          "name": "james"
+        }
+      ]
+    }
   }
 }
