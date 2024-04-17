@@ -11,14 +11,13 @@ const {
 } = require("../controllers/comments.controller");
 const articlesRouter = express.Router();
 
-articlesRouter.get("/:article_id", getArticle);
-
 articlesRouter.get("/", getArticles);
 
-articlesRouter.patch("/:article_id", patchArticle);
+articlesRouter.route("/:article_id").get(getArticle).patch(patchArticle);
 
-articlesRouter.get("/:article_id/comments", getComments);
-
-articlesRouter.post("/:article_id/comments", postComment);
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getComments)
+  .post(postComment);
 
 module.exports = articlesRouter;
