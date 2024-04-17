@@ -56,6 +56,15 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.article.article_id).toBe(1);
       });
   });
+  test("status: 200 - response article has a comment count of total number of comments", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.comment_count).toBe(11);
+        expect(body.article.article_id).toBe(1);
+      });
+  });
   test("status: 404 - responds with 404 not found for an article id that does not exist", () => {
     return request(app)
       .get("/api/articles/9999999")
