@@ -457,3 +457,81 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("status: 200 - responds with patched comment with positive votes", () => {
+    const newCommentVotes = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newCommentVotes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(26);
+        expect(comment.comment_id).toBe(1);
+      });
+  });
+  test("status: 200 - responds with patched comment with positive votes", () => {
+    const newCommentVotes = {
+      inc_votes: -10,
+    };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newCommentVotes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(6);
+        expect(comment.comment_id).toBe(1);
+      });
+  });
+  test("status: 404 - responds with 404 if comment does not exist", () => {
+    const newCommentVotes = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/comments/999")
+      .send(newCommentVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+  test("status: 400 - responds with error for incorrect body shape", () => {
+    const newCommentVotes = {};
+    return request(app)
+      .patch("/api/comments/999")
+      .send(newCommentVotes)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with error for invalid data type in body", () => {
+    const newCommentVotes = {
+      inc_votes: "10",
+    };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newCommentVotes)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with error for invalid data type in id parameter", () => {
+    const newCommentVotes = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/articles/not-an-id")
+      .send(newCommentVotes)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid request");
+      });
+  });
+});
