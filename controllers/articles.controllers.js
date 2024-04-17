@@ -19,8 +19,14 @@ exports.getArticle = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
   const { topic } = req.query;
+  let { sort_by, order } = req.query;
+
+  if (order) {
+    order = order.toUpperCase();
+  }
+
   if (topic) {
-    Promise.all([fetchArticles(topic), checkTopicExists(topic)])
+    Promise.all([fetchArticles(topic, sort_by, order), checkTopicExists(topic)])
       .then(([articles]) => {
         res.status(200).send({ articles });
       })
@@ -28,7 +34,7 @@ exports.getArticles = (req, res, next) => {
         next(err);
       });
   } else {
-    fetchArticles(topic)
+    fetchArticles(topic, sort_by, order)
       .then((articles) => {
         res.status(200).send({ articles });
       })
