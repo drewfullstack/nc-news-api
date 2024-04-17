@@ -433,3 +433,27 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("status: 200 - responds with a user object of the given username", () => {
+    return request(app)
+      .get("/api/users/icellusedkars")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.user.username).toBe("icellusedkars");
+        expect(body.user.avatar_url).toBe(
+          "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        );
+        expect(body.user.name).toBe("sam");
+      });
+  });
+
+  test("status: 404 - responds with 404 not found for a username that does not exist", () => {
+    return request(app)
+      .get("/api/users/not-a-username")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
+});
