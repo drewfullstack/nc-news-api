@@ -125,6 +125,45 @@ describe("GET /api/articles", () => {
         expect(body.articles).toHaveLength(0);
       });
   });
+  test("status: 200 - responds with all articles sorted by votes", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test("status: 200 - responds with all articles sorted by created_at in ascending order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  test("status: 200 - responds with all articles sorted by topic", () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("topic", {
+          descending: true,
+        });
+      });
+  });
+  test("status: 400 - responds with an error for invalid sort_by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=not-at-column")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid request");
+      });
+  });
   test("status: 404 - responds with 404 not found for a topic that does not exist in the database", () => {
     return request(app)
       .get("/api/articles?topic=not-a-topic")

@@ -13,7 +13,13 @@ exports.fetchArticle = (article_id) => {
     });
 };
 
-exports.fetchArticles = (topic) => {
+exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
+  const validSortCriteria = ["created_at", "topic", "author", "votes"];
+  const validOrder = ["ASC", "DESC"];
+  if (!validSortCriteria.includes(sort_by) || !validOrder.includes(order)) {
+    return Promise.reject({ status: 400, message: "invalid request" });
+  }
+
   let sqlStringQuery =
     "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id)::INT AS comment_count FROM articles ";
   let queryValues = [];
@@ -22,7 +28,8 @@ exports.fetchArticles = (topic) => {
     sqlStringQuery += "WHERE articles.topic = $1 ";
     queryValues.push(topic);
   }
-  sqlStringQuery += "ORDER BY articles.created_at DESC";
+
+  sqlStringQuery += `ORDER BY articles.${sort_by} ${order}`;
 
   return db.query(sqlStringQuery, queryValues).then(({ rows }) => {
     return rows;
