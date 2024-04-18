@@ -126,5 +126,31 @@
         }
       ]
     }
+  },
+  "POST /api/articles": {
+    "description": "posts a new article",
+    "queries": [],
+    "body": {
+      "author": "icellusedkars",
+      "title": "I love cats",
+      "body": "cats are great",
+      "topic": "cats",
+      "article_img_url": "https://cats.com"
+    },
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 14,
+          "title": "I love cats",
+          "topic": "cats",
+          "author": "icellusedkars",
+          "body": "cats are great",
+          "created_at": "2024-04-18T11:28:38.228Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+          "comment_count": 0
+        }
+      ]
+    }
   }
 }
