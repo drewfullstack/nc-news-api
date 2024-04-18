@@ -535,3 +535,73 @@ describe("PATCH /api/comments/:comment_id", () => {
       });
   });
 });
+describe("POST /api/articles", () => {
+  test("status: 201 - responds with created comment", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "I love cats",
+      body: "cats are great",
+      topic: "cats",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.article_id).toBe(14);
+        expect(body.article.title).toBe("I love cats");
+        expect(body.article.body).toBe("cats are great");
+        expect(body.article.topic).toBe("cats");
+        expect(body.article.author).toBe("icellusedkars");
+        expect(body.article.article_img_url).toBe(
+          "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
+        );
+        expect(body.article.votes).toBe(0);
+        expect(typeof body.article.created_at).toBe("string");
+        expect(body.article.comment_count).toBe(0);
+      });
+  });
+  test("status: 400 - responds with 400 if body is malformed", () => {
+    const newArticle = {};
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 400 - responds with 400 if invalid data type in body", () => {
+    const newArticle = {
+      author: 123,
+      title: "I love cats",
+      body: "cats are great",
+      topic: "cats",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid body");
+      });
+  });
+  test("status: 404 - responds with 404 if topic does not exist", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "I love cats",
+      body: "cats are great",
+      topic: "not-a-topic",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("not found");
+      });
+  });
+});
