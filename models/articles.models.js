@@ -67,3 +67,22 @@ exports.updateArticle = (article_id, inc_votes) => {
       return rows[0];
     });
 };
+
+exports.uploadArticle = (author, title, body, topic, article_img_url) => {
+  let sqlStringQuery = "INSERT INTO articles ";
+  let queryVals = [title, topic, author, body];
+
+  if (article_img_url) {
+    sqlStringQuery +=
+      "(title, topic, author, body, article_img_url) VALUES ($1, $2, $3, $4, $5) ";
+    queryVals.push(article_img_url);
+  } else {
+    sqlStringQuery += "(title, topic, author, body) VALUES ($1, $2, $3, $4) ";
+  }
+  sqlStringQuery +=
+    "RETURNING *, (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id)::INT AS comment_count;";
+  return db.query(sqlStringQuery, queryVals).then(({ rows }) => {
+    console.log(rows);
+    return rows[0];
+  });
+};
